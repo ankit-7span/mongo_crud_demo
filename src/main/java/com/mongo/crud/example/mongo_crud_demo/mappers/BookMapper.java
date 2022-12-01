@@ -11,9 +11,10 @@ public interface BookMapper {
             @Mapping(target = "name",source = "bookRequest.name"),
             @Mapping(target = "quantity",source = "bookRequest.quantity",qualifiedByName = "stringToInteger"),
             @Mapping(target = "description",source = "bookRequest.description"),
-            @Mapping(target = "price",source = "bookRequest.price")
+            @Mapping(target = "price",source = "bookRequest.price"),
+            @Mapping(target = "id", ignore = true)
     })
-    void update(@MappingTarget Book book, BookRequest bookRequest);
+    Book update(@MappingTarget Book book, BookRequest bookRequest);
 
     Book toEnity(BookRequest bookRequest);
 
