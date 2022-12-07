@@ -1,13 +1,11 @@
 package com.mongo.crud.example.mongo_crud_demo.models;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
 
 
-@Document(collection ="book")
+@Document(collection = "book")
 public class Book {
 
     @Id

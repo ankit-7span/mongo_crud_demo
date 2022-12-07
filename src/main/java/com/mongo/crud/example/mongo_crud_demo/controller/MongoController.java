@@ -54,7 +54,6 @@ public class MongoController {
                 //.headers(httpHeaders -> {}) For multiple haders
                 .body(Mono.just(bookRequest), new ParameterizedTypeReference<List<BookRequest>>() {
                 })
-                .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<List<String>>() {
                 }).block();
     }*/
