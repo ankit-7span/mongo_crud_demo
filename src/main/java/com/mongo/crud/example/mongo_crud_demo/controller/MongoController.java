@@ -82,17 +82,17 @@ public class MongoController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<String> addBook(@RequestBody BookRequest book) {
-        Book book1 = bookMapper.toEnity(book);
-        bookRepo.save(book1);
+    public ResponseEntity<String> addBook(@RequestBody BookRequest bookRequest) {
+        Book book = bookMapper.toEnity(bookRequest);
+        bookRepo.save(book);
         return ResponseEntity.ok("Book Added Successfully!");
     }
 
     @PutMapping("/update/{id}")
     public ResponseEntity<String> updateBook(@PathVariable(name = "id") int id, @RequestBody BookRequest bookRequest) {
-        Book book1 = bookRepo.findById(id).orElseThrow(RuntimeException::new);
-        Book update = bookMapper.update(book1, bookRequest);
-        bookRepo.save(update);
+        Book book = bookRepo.findById(id).orElseThrow(RuntimeException::new);
+        Book updatedBook = bookMapper.update(book, bookRequest);
+        bookRepo.save(updatedBook);
         return ResponseEntity.ok("Book Updated Successfully!");
     }
 
