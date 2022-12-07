@@ -2,6 +2,7 @@ package com.mongo.crud.example.mongo_crud_demo.controller;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.mongo.crud.example.mongo_crud_demo.configuration.CustomConfiguration;
 import com.mongo.crud.example.mongo_crud_demo.mappers.BookMapper;
 import com.mongo.crud.example.mongo_crud_demo.models.Book;
 import com.mongo.crud.example.mongo_crud_demo.repo.BookRepo;
@@ -21,7 +22,7 @@ import java.util.List;
 public class MongoController {
 
     @Autowired
-    WebClient.Builder webClient;
+    CustomConfiguration configuration;
 
     @Autowired
     private BookMapper bookMapper;
@@ -33,8 +34,9 @@ public class MongoController {
     //WebClient
     @GetMapping("/getData")
     public String getExternalData() {
+        WebClient webClient = configuration.getWebClient();
         Gson gson = new Gson();
-        Object block = webClient.build()
+        Object block = webClient
                 .get()
                 .uri("https://www.boredapi.com/api/activity")
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
@@ -48,7 +50,8 @@ public class MongoController {
     //WebClient Post For List of request body and response
    /* @PostMapping("/addData")
     public List<String> addDataToWebClient(@RequestBody List<BookRequest> bookRequest) {
-        return webClient.build().post()
+         WebClient webClient = configuration.getWebClient();
+        return webClient.post()
                 .uri("http://localhost:8080/api/v1/crud/add")
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 //.headers(httpHeaders -> {}) For multiple haders
@@ -61,7 +64,8 @@ public class MongoController {
     //WebClient
     @PutMapping("/updateData/{id}")
     public String updateDataToWebClient(@PathVariable(name = "id") int id, @RequestBody BookRequest bookRequest) {
-        return webClient.build().put()
+        WebClient webClient = configuration.getWebClient();
+        return webClient.put()
                 .uri("http://localhost:8080/api/v1/crud/update/" + id)
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 //.headers(httpHeaders -> {}) For multiple haders
