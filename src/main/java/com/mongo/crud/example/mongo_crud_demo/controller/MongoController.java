@@ -7,6 +7,7 @@ import com.mongo.crud.example.mongo_crud_demo.models.Book;
 import com.mongo.crud.example.mongo_crud_demo.repo.BookRepo;
 import com.mongo.crud.example.mongo_crud_demo.request.BookRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +35,7 @@ public class MongoController {
     //WebClient
     @GetMapping("/getData")
     public String getExternalData(){
+
         Gson gson=new Gson();
         Object block = webClient.build()
                 .get()
@@ -46,13 +48,16 @@ public class MongoController {
 
     //WebClient
     @PostMapping("/addData")
-    public String addDataToWebClient(@RequestBody BookRequest bookRequest){
-        return webClient.build().post()
+    public List<String> addDataToWebClient(@RequestBody List<BookRequest> bookRequest) {
+        List<String> block = webClient.build().post()
                 .uri("http://localhost:8080/api/v1/crud/add")
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .body(Mono.just(bookRequest), BookRequest.class)
+                .body(Mono.just(bookRequest), new ParameterizedTypeReference<List<BookRequest>>() {
+                })
                 .retrieve()
-                .bodyToMono(String.class).block();
+                .bodyToMono(new ParameterizedTypeReference<List<String>>() {
+                }).block();
+        return block;
     }
 
     //WebClient
@@ -78,9 +83,10 @@ public class MongoController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<String> addBook(@RequestBody BookRequest book) {
-        Book book1 = bookMapper.toEnity(book);
-        bookRepo.save(book1);
+    public ResponseEntity<String> addBook(@RequestBody List<BookRequest> book) {
+        /*Book book1 = bookMapper.toEnity(book);
+        bookRepo.save(book1);*/
+        System.out.println(book);
         return ResponseEntity.ok("Book Added Successfully!");
     }
 
