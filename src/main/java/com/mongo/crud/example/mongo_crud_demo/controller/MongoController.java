@@ -30,11 +30,16 @@ public class MongoController {
     @Autowired
     private BookRepo bookRepo;
 
+    WebClient webClient;
+
+    @Autowired
+    public MongoController(CustomConfiguration configuration) {
+        this.webClient = configuration.getWebClient();
+    }
 
     //WebClient
     @GetMapping("/getData")
     public String getExternalData() {
-        WebClient webClient = configuration.getWebClient();
         Gson gson = new Gson();
         Object block = webClient
                 .get()
@@ -50,7 +55,6 @@ public class MongoController {
     //WebClient Post For List of request body and response
    /* @PostMapping("/addData")
     public List<String> addDataToWebClient(@RequestBody List<BookRequest> bookRequest) {
-         WebClient webClient = configuration.getWebClient();
         return webClient.post()
                 .uri("http://localhost:8080/api/v1/crud/add")
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
@@ -64,7 +68,6 @@ public class MongoController {
     //WebClient
     @PutMapping("/updateData/{id}")
     public String updateDataToWebClient(@PathVariable(name = "id") int id, @RequestBody BookRequest bookRequest) {
-        WebClient webClient = configuration.getWebClient();
         return webClient.put()
                 .uri("http://localhost:8080/api/v1/crud/update/" + id)
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
