@@ -7,7 +7,6 @@ import com.mongo.crud.example.mongo_crud_demo.models.Book;
 import com.mongo.crud.example.mongo_crud_demo.repo.BookRepo;
 import com.mongo.crud.example.mongo_crud_demo.request.BookRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -31,41 +30,42 @@ public class MongoController {
     private BookRepo bookRepo;
 
 
-
     //WebClient
     @GetMapping("/getData")
-    public String getExternalData(){
-
-        Gson gson=new Gson();
+    public String getExternalData() {
+        Gson gson = new Gson();
         Object block = webClient.build()
                 .get()
                 .uri("https://www.boredapi.com/api/activity")
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                //.headers(httpHeaders -> {}) For multiple haders
                 .retrieve()
                 .bodyToMono(Object.class).block();
         JsonObject jsonObject = gson.fromJson(gson.toJson(block), JsonObject.class);
         return String.valueOf(jsonObject.get("activity"));
     }
 
-    //WebClient
-    @PostMapping("/addData")
+    //WebClient Post For List of request body and response
+   /* @PostMapping("/addData")
     public List<String> addDataToWebClient(@RequestBody List<BookRequest> bookRequest) {
-        List<String> block = webClient.build().post()
+        return webClient.build().post()
                 .uri("http://localhost:8080/api/v1/crud/add")
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                //.headers(httpHeaders -> {}) For multiple haders
                 .body(Mono.just(bookRequest), new ParameterizedTypeReference<List<BookRequest>>() {
                 })
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<List<String>>() {
                 }).block();
-        return block;
-    }
+    }*/
 
     //WebClient
     @PutMapping("/updateData/{id}")
-    public String updateDataToWebClient(@PathVariable(name = "id")int id,@RequestBody BookRequest bookRequest){
+    public String updateDataToWebClient(@PathVariable(name = "id") int id, @RequestBody BookRequest bookRequest) {
         return webClient.build().put()
-                .uri("http://localhost:8080/api/v1/crud/update/"+id)
+                .uri("http://localhost:8080/api/v1/crud/update/" + id)
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                //.headers(httpHeaders -> {}) For multiple haders
                 .body(Mono.just(bookRequest), BookRequest.class)
                 .retrieve()
                 .bodyToMono(String.class).block();
@@ -83,10 +83,9 @@ public class MongoController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<String> addBook(@RequestBody List<BookRequest> book) {
-        /*Book book1 = bookMapper.toEnity(book);
-        bookRepo.save(book1);*/
-        System.out.println(book);
+    public ResponseEntity<String> addBook(@RequestBody BookRequest book) {
+        Book book1 = bookMapper.toEnity(book);
+        bookRepo.save(book1);
         return ResponseEntity.ok("Book Added Successfully!");
     }
 
