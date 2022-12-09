@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/crud/")
@@ -38,18 +40,24 @@ public class MongoController {
     }
 
     //WebClient
-    @GetMapping("/getData")
-    public String getExternalData() {
+    @GetMapping("/getData/{pin}")
+    public Map<String, String> getExternalData(@PathVariable(name = "pin")String pin) {
         Gson gson = new Gson();
         Object block = webClient
                 .get()
-                .uri("https://www.boredapi.com/api/activity")
+                .uri("https://viacep.com.br/ws/"+pin+"/json/")
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 //.headers(httpHeaders -> {}) For multiple haders
                 .retrieve()
                 .bodyToMono(Object.class).block();
         JsonObject jsonObject = gson.fromJson(gson.toJson(block), JsonObject.class);
-        return String.valueOf(jsonObject.get("activity"));
+        Map<String,String> address=new HashMap<>();
+        address.put("State",jsonObject.get("uf").getAsString());
+        address.put("City",jsonObject.get("localidade").getAsString());
+        address.put("Street",jsonObject.get("logradouro").getAsString());
+        address.put("Neighborhood",jsonObject.get("bairro").getAsString());
+        address.put("Zip",jsonObject.get("cep").getAsString());
+        return address;
     }
 
     //WebClient Post For List of request body and response
