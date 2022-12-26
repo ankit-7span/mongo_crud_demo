@@ -2,14 +2,18 @@ package com.mongo.crud.example.mongo_crud_demo.models;
 
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 
 @Document(collection = "book")
 public class Book {
 
+    @Transient
+    public static final String SEQUENCE_NAME = "users_sequence";
+
     @Id
-    private int id;
+    private long id;
 
     private String name;
 
@@ -22,19 +26,18 @@ public class Book {
     public Book() {
     }
 
-    public Book(int id, String name, int quantity, String description, double price) {
-        this.id = id;
+    public Book(String name, int quantity, String description, double price) {
         this.name = name;
         this.quantity = quantity;
         this.description = description;
         this.price = price;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

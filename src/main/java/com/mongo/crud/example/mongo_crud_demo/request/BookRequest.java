@@ -2,26 +2,16 @@ package com.mongo.crud.example.mongo_crud_demo.request;
 
 
 public class BookRequest {
-    private int id;
     private String name;
     private String quantity;
     private String description;
     private double price;
 
-    public BookRequest(int id, String name, String quantity, String description, double price) {
-        this.id = id;
+    public BookRequest(String name, String quantity, String description, double price) {
         this.name = name;
         this.quantity = quantity;
         this.description = description;
         this.price = price;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public BookRequest() {
